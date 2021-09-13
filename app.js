@@ -4,6 +4,7 @@ const handlebars = require("express-handlebars");
 const bodyParser = require("body-parser");
 // const mongoose = require("mongoose");
 const app = express();
+const admin = require("./routes/admin");
 
 // Configurations
 // |> Handlebars
@@ -18,6 +19,15 @@ app.use(bodyParser.json());
 // COMING SOON
 
 // Routes
+app.get("/", (req, res) => {
+  res.send("Main route!");
+});
+
+app.get("/posts", (req, res) => {
+  res.send("Post list!");
+});
+
+app.use("/admin", admin);
 
 // Others
 const PORT = 8081;
