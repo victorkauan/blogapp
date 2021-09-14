@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 // const mongoose = require("mongoose");
 const app = express();
 const admin = require("./routes/admin");
+const path = require("path");
 
 // Configurations
 // |> Handlebars
@@ -17,6 +18,9 @@ app.use(bodyParser.json());
 
 // |> Mongoose
 // COMING SOON
+
+// |> Public
+app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
 app.get("/", (req, res) => {
