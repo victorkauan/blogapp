@@ -2,7 +2,7 @@
 const express = require("express");
 const handlebars = require("express-handlebars");
 const bodyParser = require("body-parser");
-// const mongoose = require("mongoose");
+const mongoose = require("mongoose");
 const app = express();
 const admin = require("./routes/admin");
 const path = require("path");
@@ -17,7 +17,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // |> Mongoose
-// COMING SOON
+mongoose.Promise = global.Promise;
+mongoose
+  .connect("mongodb://localhost/blogapp")
+  .then(() => {
+    console.log("MongoDB connected...");
+  })
+  .catch((err) => {
+    console.log("There was an error connecting to MongoDB: " + err);
+  });
 
 // |> Public
 app.use(express.static(path.join(__dirname, "public")));
