@@ -30,6 +30,12 @@ mongoose
 // |> Public
 app.use(express.static(path.join(__dirname, "public")));
 
+// Middlewares
+app.use((req, res, next) => {
+  console.log("Hi, I'm a middleware!");
+  next();
+});
+
 // Routes
 app.get("/", (req, res) => {
   res.send("Main route!");
