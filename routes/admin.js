@@ -17,23 +17,55 @@ router.get("/categories", (req, res) => {
 });
 
 router.get("/categories/add", (req, res) => {
-  res.render("admin/addcategory");
+  res.render("admin/addcategories");
 });
 
 router.post("/categories/new", (req, res) => {
-  const newCategory = {
-    name: req.body.name,
-    slug: req.body.slug,
-  };
+  // Validation
+  let errors = [];
 
-  new Category(newCategory)
-    .save()
-    .then(() => {
-      console.log("Category saved successfully!");
-    })
-    .catch((err) => {
-      console.log("Error saving category: " + err);
-    });
+  // |> Name
+  if (
+    !req.body.name ||
+    typeof req.body.name === undefined ||
+    req.body.name === null
+  ) {
+    errors.push({ message: "Invalid name!" });
+  } else if (req.body.name.length < 2) {
+    errors.push({ message: "Category name too small!" });
+  }
+
+  // |> Slug
+  if (
+    !req.body.slug ||
+    typeof req.body.slug === undefined ||
+    req.body.slug === null
+  ) {
+    errors.push({ message: "Invalid slug!" });
+  }
+
+  if (errors.length > 0) {
+    res.render("admin/addcategories", { errors: errors });
+  } else {
+    const newCategory = {
+      name: req.body.name,
+      slug: req.body.slug,
+    };
+
+    new Category(newCategory)
+      .save()
+      .then(() => {
+        req.flash("success_msg", "Category created successfully!");
+        res.redirect("/admin/categories");
+      })
+      .catch((err) => {
+        req.flash(
+          "error_msg",
+          "There was an error saving the category, please try again!"
+        );
+        res.redirect("/admin/categories");
+      });
+  }
 });
 
 module.exports = router;
