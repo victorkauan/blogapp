@@ -8,10 +8,6 @@ router.get("/", (req, res) => {
   res.render("admin/index");
 });
 
-router.get("/posts", (req, res) => {
-  res.send("Posts page!");
-});
-
 router.get("/categories", (req, res) => {
   Category.find()
     .lean()
@@ -124,6 +120,22 @@ router.post("/categories/delete", (req, res) => {
     .catch((err) => {
       req.flash("error_msg", "There was an error deleting the category!");
       res.redirect("/admin/categories");
+    });
+});
+
+router.get("/posts", (req, res) => {
+  res.render("admin/posts");
+});
+
+router.get("/posts/add", (req, res) => {
+  Category.find()
+    .lean()
+    .then((categories) => {
+      res.render("admin/addposts", { categories: categories });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "There was an error loading the form!");
+      res.redirect("/admin/posts");
     });
 });
 
