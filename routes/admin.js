@@ -126,7 +126,17 @@ router.post("/categories/delete", (req, res) => {
 });
 
 router.get("/posts", (req, res) => {
-  res.render("admin/posts");
+  Post.find()
+    .lean()
+    .populate("category")
+    .sort({ date: "desc" })
+    .then((posts) => {
+      res.render("admin/posts", { posts: posts });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "There was an error listing the posts!");
+      res.redirect("/admin");
+    });
 });
 
 router.get("/posts/add", (req, res) => {
