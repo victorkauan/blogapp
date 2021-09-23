@@ -182,4 +182,53 @@ router.post("/posts/new", (req, res) => {
   }
 });
 
+router.get("/posts/edit/:id", (req, res) => {
+  Post.findOne({ _id: req.params.id })
+    .lean()
+    .then((post) => {
+      Category.find()
+        .lean()
+        .then((categories) => {
+          res.render("admin/editposts", { post: post, categories: categories });
+        })
+        .catch((err) => {
+          req.flash("error_msg", "There was an error listing the categories!");
+          res.redirect("/admin/posts");
+        });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "There was an error loading the edit form!");
+      res.redirect("/admin/posts");
+    });
+});
+
+router.post("/posts/edit", (req, res) => {
+  Post.findOne({ _id: req.body.id })
+    .then((post) => {
+      post.title = req.body.title;
+      post.slug = req.body.slug;
+      post.description = req.body.description;
+      post.content = req.body.content;
+      post.category = req.body.category;
+
+      post
+        .save()
+        .then(() => {
+          req.flash("success_msg", "Post successfully edited!");
+          res.redirect("/admin/posts");
+        })
+        .catch(() => {
+          req.flash(
+            "error_msg",
+            "There was an internal error saving the edit!"
+          );
+          res.redirect("/admin/posts");
+        });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "There was an error saving the edit!");
+      res.redirect("/admin/posts");
+    });
+});
+
 module.exports = router;
