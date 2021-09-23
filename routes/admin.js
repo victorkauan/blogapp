@@ -231,4 +231,16 @@ router.post("/posts/edit", (req, res) => {
     });
 });
 
+router.get("/posts/delete/:id", (req, res) => {
+  Post.deleteOne({ _id: req.params.id })
+    .then(() => {
+      req.flash("success_msg", "Post deleted successfully!");
+      res.redirect("/admin/posts");
+    })
+    .catch((err) => {
+      req.flash("error_msg", "There was an error deleting the post!");
+      res.redirect("/admin/posts");
+    });
+});
+
 module.exports = router;
