@@ -8,6 +8,8 @@ const admin = require("./routes/admin");
 const path = require("path");
 const session = require("express-session");
 const flash = require("connect-flash");
+require("./models/Post");
+const Post = mongoose.model("posts");
 
 // Configurations
 // |> Session
@@ -51,7 +53,21 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
 app.get("/", (req, res) => {
-  res.send("Main route!");
+  Post.find()
+    .lean()
+    .populate("category")
+    .sort({ date: "desc" })
+    .then((posts) => {
+      res.render("index", { posts: posts });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "There was an internal error!");
+      res.redirect("/404");
+    });
+});
+
+app.get("/404", (req, res) => {
+  res.send("Error 404!");
 });
 
 app.get("/posts", (req, res) => {
