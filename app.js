@@ -66,12 +66,26 @@ app.get("/", (req, res) => {
     });
 });
 
-app.get("/404", (req, res) => {
-  res.send("Error 404!");
+app.get("/post/:slug", (req, res) => {
+  Post.findOne({ slug: req.params.slug })
+    .lean()
+    .populate("category")
+    .then((post) => {
+      if (post) {
+        res.render("post/index", { post: post });
+      } else {
+        req.flash("error_msg", "This post does not exist!");
+        res.redirect("/");
+      }
+    })
+    .catch((err) => {
+      req.flash("error_msg", "There was an internal error!");
+      res.redirect("/");
+    });
 });
 
-app.get("/posts", (req, res) => {
-  res.send("Post list!");
+app.get("/404", (req, res) => {
+  res.send("Error 404!");
 });
 
 app.use("/admin", admin);
