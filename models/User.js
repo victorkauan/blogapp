@@ -1,19 +1,23 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Category = new Schema({
+const User = new Schema({
   name: {
     type: String,
     required: true,
   },
-  slug: {
+  email: {
     type: String,
     required: true,
   },
-  date: {
-    type: Date,
-    default: Date.now(),
+  password: {
+    type: String,
+    required: true,
+  },
+  isAdmin: {
+    type: Number,
+    required: true,
   },
 });
 
-mongoose.model("categories", Category);
+mongoose.model("users", User);
