@@ -16,7 +16,7 @@ const User = new Schema({
   },
   isAdmin: {
     type: Number,
-    required: true,
+    default: 0,
   },
 });
 

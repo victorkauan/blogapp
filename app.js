@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const app = express();
 const admin = require("./routes/admin");
+const user = require("./routes/user");
 const path = require("path");
 const session = require("express-session");
 const flash = require("connect-flash");
@@ -136,6 +137,8 @@ app.get("/404", (req, res) => {
 });
 
 app.use("/admin", admin);
+
+app.use("/user", user);
 
 // Others
 const PORT = 8081;
