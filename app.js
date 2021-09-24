@@ -10,6 +10,8 @@ const session = require("express-session");
 const flash = require("connect-flash");
 require("./models/Post");
 const Post = mongoose.model("posts");
+require("./models/Category");
+const Category = mongoose.model("categories");
 
 // Configurations
 // |> Session
@@ -81,6 +83,51 @@ app.get("/post/:slug", (req, res) => {
     .catch((err) => {
       req.flash("error_msg", "There was an internal error!");
       res.redirect("/");
+    });
+});
+
+app.get("/categories", (req, res) => {
+  Category.find()
+    .lean()
+    .sort({ name: "asc" })
+    .then((categories) => {
+      res.render("categories/index", { categories: categories });
+    })
+    .catch((err) => {
+      req.flash("There was an internal error listing the categories!");
+      res.redirect("/");
+    });
+});
+
+app.get("/categories/:slug", (req, res) => {
+  Category.findOne({ slug: req.params.slug })
+    .lean()
+    .then((category) => {
+      if (category) {
+        Post.find({ category: category._id })
+          .lean()
+          .sort({ date: "desc" })
+          .then((posts) => {
+            res.render("categories/posts", {
+              category: category,
+              posts: posts,
+            });
+          })
+          .catch((err) => {
+            req.flash("error_msg", "There was an error listing the posts!");
+            res.redirect("/categories");
+          });
+      } else {
+        req.flash("error_msg", "This category does not exist!");
+        res.redirect("/categories");
+      }
+    })
+    .catch((err) => {
+      req.flash(
+        "error_msg",
+        "There was an internal error loading this category's page!"
+      );
+      res.redirect("/categories");
     });
 });
 
