@@ -9,6 +9,8 @@ const user = require("./routes/user");
 const path = require("path");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+require("./config/auth")(passport);
 require("./models/Post");
 const Post = mongoose.model("posts");
 require("./models/Category");
@@ -23,6 +25,8 @@ app.use(
     saveUninitialized: true,
   })
 );
+app.use(passport.initialize);
+app.use(passport.session);
 app.use(flash());
 
 // |> Middleware
