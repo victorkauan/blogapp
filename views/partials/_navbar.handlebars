@@ -20,7 +20,11 @@
         <li class="nav-item">
           <a class="nav-link" href="/categories">Categories</a>
         </li>
-        {{#if user}}{{else}}
+        {{#if user}}
+          <li class="nav-item">
+            <a href="/user/logout" class="nav-link">Logout</a>
+          </li>
+        {{else}}
           <li class="nav-item">
             <a href="/user/login" class="nav-link">Login</a>
           </li>
