@@ -1,3 +1,4 @@
+// Loading modules
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
@@ -59,7 +60,6 @@ router.post("/register", (req, res) => {
             name: req.body.name,
             email: req.body.email,
             password: req.body.password,
-            isAdmin: 1,
           });
 
           bcrypt.genSalt(10, (err, salt) => {
