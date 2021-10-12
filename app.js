@@ -11,6 +11,9 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
 require("./config/auth")(passport);
+const db = require("./config/db");
+
+// Models
 require("./models/Post");
 const Post = mongoose.model("posts");
 require("./models/Category");
@@ -49,7 +52,7 @@ app.use(bodyParser.json());
 // |> Mongoose
 mongoose.Promise = global.Promise;
 mongoose
-  .connect("mongodb://localhost/blogapp")
+  .connect(db.mongoURI)
   .then(() => {
     console.log("MongoDB connected...");
   })
@@ -147,7 +150,7 @@ app.use("/admin", admin);
 app.use("/user", user);
 
 // Others
-const PORT = 8081;
+const PORT = process.env.PORT || 8081;
 
 app.listen(PORT, () => {
   console.log("Server running on port " + PORT + "!");
